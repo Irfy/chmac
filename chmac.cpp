@@ -62,9 +62,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		retval = reset(argv[1]);
 	else
 		for(int i=0; i<count; i++) {
+			std::wcout << adapters[i].InstanceId << L' ';
+			std::wcout << adapters[i].MAC << L' ';
 			std::wcout << adapters[i].Description << std::endl;
-			std::wcout << adapters[i].InstanceId << std::endl;
-			std::wcout << adapters[i].MAC << std::endl;
 		}
 
 cleanup:
