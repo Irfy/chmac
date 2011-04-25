@@ -27,10 +27,6 @@ namespace CodeProjectUtils
 		std::wstring InstanceId;
 		std::wstring Description;
 		std::wstring MAC;
-		operator const LPCTSTR()
-		{
-			return MAC.c_str();
-		}
 	};
 
 	class CNetworkAdapterList
