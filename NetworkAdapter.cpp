@@ -216,7 +216,6 @@ bool CodeProjectUtils::Reset(ADAPTERINFO* pAdInfo)
 	guidstr.erase(guidstr.find_last_not_of(L"{}") + 1);
 	_bstr_t bstr = guidstr.c_str();
 	UuidFromStringW((unsigned short*)bstr.GetBSTR(),&guidId);
-	SysFreeString(bstr);
 
 	return(EnableConnection(guidId,false) && EnableConnection(guidId,true));
 }
