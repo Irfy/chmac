@@ -70,12 +70,12 @@ int CodeProjectUtils::CNetworkAdapterList::GetAdapters(ADAPTERINFO* pADAPTERINFO
 		sstream << pAdapInfo->AdapterName;
 		pADAPTERINFO[index].InstanceId = sstream.str();
 
-		sstream.clear();
+		sstream.str(L"");
 		sstream << pAdapInfo->Description;
 		pADAPTERINFO[index].Description = sstream.str();
 
 		for(int i=0; i < (int)pAdapInfo->AddressLength; i++) {
-			std::wstringstream sstream;
+			sstream.str(L"");
 			sstream << pADAPTERINFO[index].MAC << std::hex << (int)pAdapInfo->Address[i];
 			pADAPTERINFO[index].MAC = sstream.str();
 		}
