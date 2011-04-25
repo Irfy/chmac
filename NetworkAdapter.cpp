@@ -5,6 +5,7 @@
 
 #include "NetworkAdapter.h"
 #include <sstream>
+#include <iomanip>
 
 #pragma comment(lib,"comsupp.lib")
 #include <comutil.h>
@@ -76,7 +77,7 @@ int CodeProjectUtils::CNetworkAdapterList::GetAdapters(ADAPTERINFO* pADAPTERINFO
 
 		for(int i=0; i < (int)pAdapInfo->AddressLength; i++) {
 			sstream.str(L"");
-			sstream << pADAPTERINFO[index].MAC << std::hex << (int)pAdapInfo->Address[i];
+			sstream << pADAPTERINFO[index].MAC << std::setw(2) << std::setfill(L'0') << std::hex << (int)pAdapInfo->Address[i];
 			pADAPTERINFO[index].MAC = sstream.str();
 		}
 
