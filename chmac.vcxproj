@@ -73,15 +73,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="NetworkAdapter.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="chmac.cpp" />
     <ClCompile Include="NetworkAdapter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.markdown" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
