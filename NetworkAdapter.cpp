@@ -4,6 +4,10 @@
 */
 
 #include "NetworkAdapter.h"
+#include <sstream>
+
+#pragma comment(lib,"comsupp.lib")
+#include <comutil.h>
 
 CodeProjectUtils::CNetworkAdapterList::CNetworkAdapterList(void)
 {
@@ -62,12 +66,19 @@ int CodeProjectUtils::CNetworkAdapterList::GetAdapters(ADAPTERINFO* pADAPTERINFO
 	PIP_ADAPTER_INFO pAdapInfo = pAdapterInfo;
 	while(pAdapInfo)
 	{
-		pADAPTERINFO[index].InstanceId = pAdapInfo->AdapterName;
-		pADAPTERINFO[index].Description = pAdapInfo->Description;
-		for(int i=0; i < (int)pAdapInfo->AddressLength; i++)
-			pADAPTERINFO[index].MAC.Format(_T("%s%02X "),
-			CString(pADAPTERINFO[index].MAC),(int)pAdapInfo->Address[i]);
-		pADAPTERINFO[index].MAC.Trim();
+		std::wstringstream sstream;
+		sstream << pAdapInfo->AdapterName;
+		pADAPTERINFO[index].InstanceId = sstream.str();
+
+		sstream.clear();
+		sstream << pAdapInfo->Description;
+		pADAPTERINFO[index].Description = sstream.str();
+
+		for(int i=0; i < (int)pAdapInfo->AddressLength; i++) {
+			std::wstringstream sstream;
+			sstream << pADAPTERINFO[index].MAC << std::hex << (int)pAdapInfo->Address[i];
+			pADAPTERINFO[index].MAC = sstream.str();
+		}
 
 		index++;
 		pAdapInfo = pAdapInfo->Next;
@@ -145,7 +156,7 @@ bool CodeProjectUtils::EnableConnection(GUID guidId, bool bEnable)
 	return ret; 
 }
 
-bool CodeProjectUtils::UpdateRegistry(CString strNetCfgInstanceId, LPCTSTR lpszMacID /*= NULL*/)
+bool CodeProjectUtils::UpdateRegistry(std::wstring strNetCfgInstanceId, LPCTSTR lpszMacID /*= NULL*/)
 {
 	bool bRet = false;
 	HKEY hKey = NULL;			
@@ -166,7 +177,7 @@ bool CodeProjectUtils::UpdateRegistry(CString strNetCfgInstanceId, LPCTSTR lpszM
 				DWORD cbData = 1024;
 				if(RegQueryValueEx(hSubKey,_T("NetCfgInstanceId"),NULL,NULL,Data,&cbData) == ERROR_SUCCESS)
 				{
-					if(_tcscmp((TCHAR*)Data,strNetCfgInstanceId) == 0)
+					if(_tcscmp((TCHAR*)Data,strNetCfgInstanceId.c_str()) == 0)
 					{
 						if(lpszMacID == NULL)
 						{
@@ -200,9 +211,11 @@ bool CodeProjectUtils::UpdateRegistry(CString strNetCfgInstanceId, LPCTSTR lpszM
 bool CodeProjectUtils::Reset(ADAPTERINFO* pAdInfo)
 {
 	GUID guidId;
-	CString guidstr = pAdInfo->InstanceId;
-	BSTR bstr = guidstr.Trim(_T("{}")).AllocSysString();			
-	UuidFromStringW((unsigned short*)bstr,&guidId);
+	std::wstring guidstr = pAdInfo->InstanceId;
+	guidstr.erase(guidstr.begin(), guidstr.begin() + guidstr.find_first_not_of(L"{}"));
+	guidstr.erase(guidstr.find_last_not_of(L"{}") + 1);
+	_bstr_t bstr = guidstr.c_str();
+	UuidFromStringW((unsigned short*)bstr.GetBSTR(),&guidId);
 	SysFreeString(bstr);
 
 	return(EnableConnection(guidId,false) && EnableConnection(guidId,true));

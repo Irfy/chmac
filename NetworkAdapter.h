@@ -5,6 +5,10 @@
 
 #pragma once
 
+#include <windows.h>
+#include <string>
+#include <tchar.h>
+
 #pragma comment(lib,"Iphlpapi.lib")
 #include <Iphlpapi.h>
 
@@ -18,14 +22,14 @@ namespace CodeProjectUtils
 	{
 		ADAPTERINFO()
 		{
-			InstanceId = Description = MAC = "";
+			InstanceId = Description = MAC = _T("");
 		}
-		CString InstanceId;
-		CString Description;
-		CString MAC;
-		operator LPCTSTR()
+		std::wstring InstanceId;
+		std::wstring Description;
+		std::wstring MAC;
+		operator const LPCTSTR()
 		{
-			return MAC;
+			return MAC.c_str();
 		}
 	};
 
@@ -44,7 +48,7 @@ namespace CodeProjectUtils
 	};
 
 	bool EnableConnection(GUID guidId, bool bEnable);
-	bool UpdateRegistry(CString strNetCfgInstanceId, LPCTSTR lpszMacID = NULL);
+	bool UpdateRegistry(std::wstring strNetCfgInstanceId, LPCTSTR lpszMacID = NULL);
 	bool Reset(ADAPTERINFO* pAdInfo);
 	DWORD ErrorCOMToWin32(HRESULT hr);
 }
